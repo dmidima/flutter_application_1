@@ -1,86 +1,94 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_markdown/flutter_markdown.dart';
+// import 'package:http/http.dart' as http;
 
-void main() {
-  runApp(const MyApp());
-}
+// void main() {
+//   runApp(MyApp());
+// }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return const MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: MarkdownViewer(
+//         initialUrl:
+//             'https://dmidima.github.io/flutter_application_1/README.md', // Ensure this file exists
+//       ),
+//     );
+//   }
+// }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Auto Image'),
-    );
-  }
-}
+// class MarkdownViewer extends StatelessWidget {
+//   final String initialUrl;
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+//   const MarkdownViewer({super.key, required this.initialUrl});
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('документация'),
+//       ),
+//       body: Fetcher(url: initialUrl),
+//     );
+//   }
+// }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
-  List<String> imageUrls = [
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Felis_silvestris_silvestris_small_gradual_decrease_of_quality.png/80px-Felis_silvestris_silvestris_small_gradual_decrease_of_quality.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/JPEG_example_flower.jpg/120px-JPEG_example_flower.jpg",
-    "https://png.pngtree.com/png-vector/20230803/ourmid/pngtree-flower-jpg-vector-png-image_6886192.png",
-  ];
+// class Fetcher extends StatelessWidget {
+//   final String url;
 
-  late Timer _timer;
+//   const Fetcher({super.key, required this.url});
 
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      setState(() {
-        _currentIndex = (_currentIndex + 1) % imageUrls.length;
-      });
-    });
-  }
+//   @override
+//   Widget build(BuildContext context) {
+//     Uri link = Uri.tryParse(url) ?? Uri();
 
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Изображение меняется автоматически каждые 3 секунды',
-            ),
-            Center(
-              child: Container(
-                constraints:
-                    const BoxConstraints(minHeight: 200, minWidth: 300),
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Image.network(imageUrls[_currentIndex]),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//     return FutureBuilder<http.Response>(
+//       future: http.get(link),
+//       builder: (context, snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const Center(child: CircularProgressIndicator());
+//         } else if (snapshot.hasError) {
+//           return Center(
+//             child: Text('Error loading: ${snapshot.error}'),
+//           );
+//         } else if (snapshot.hasData && snapshot.data?.statusCode == 200) {
+//           String markdown = snapshot.data?.body ?? "";
+//           return SingleChildScrollView(
+//             child: Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: MarkdownBody(
+//                 data: markdown,
+//                 onTapLink: (text, href, title) {
+//                   if (href != null) {
+//                     Navigator.push(
+//                       context,
+//                       MaterialPageRoute(
+//                         builder: (_) => MarkdownViewer(
+//                           initialUrl: Uri.parse(url).resolve(href).toString(),
+//                         ),
+//                       ),
+//                     );
+//                   }
+//                 },
+//                 imageBuilder: (uri, title, alt) {
+//                   final resolvedUrl =
+//                       Uri.parse(url).resolve(uri.toString()).toString();
+//                   return Image.network(resolvedUrl);
+//                 },
+//               ),
+//             ),
+//           );
+//         } else {
+//           return Center(
+//             child: Text(
+//               'Error: response code ${snapshot.data?.statusCode}',
+//               style: const TextStyle(color: Colors.red),
+//             ),
+//           );
+//         }
+//       },
+//     );
+//   }
+// }
